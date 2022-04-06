@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}  
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}
+  
+    spec:
+      volumes:
+      - name: {{ .Values.pvccode }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.pvccode }}
+      - name: {{ .Values.pvcphp }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.pvcphp }}
+      - name: {{ .Values.pvclhc }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.pvclhc }}
+      containers:
+      - name: {{ .Release.Name }}
+        image: remdex/livehelperchat-php:latest
+      
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "200m"
+        ports:
+        - containerPort: 9000
+        volumeMounts:
+        - mountPath: "/code/"
+          name: {{ .Values.pvccode }}
+        - mountPath: "/code/extension/lhcphpresque"
+          name: {{ .Values.pvclhc }}
+        - mountPath: "/code/extension/nodjshelper"
+          name: {{ .Values.pvclhc }}
+        - mountPath: /scripts
+          name: {{ .Values.pvclhc }}
+        - mountPath: /usr/local/etc/php-fpm.d/zz-lhc.conf
+          name: {{ .Values.pvcphp }}
+#        command: ["/bin/bash"]
+ #       args: ["-c", "cd /var/www/html/livehelperchat/lhc_web/ | npm install"]
