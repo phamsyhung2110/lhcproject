@@ -166,7 +166,7 @@ spec:
 #         - mountPath: /scripts
 #           name: {{ .Values.pvcphp }}
 #---      
-
+#
 # PHP resque
 apiVersion: apps/v1
 kind: Deployment
