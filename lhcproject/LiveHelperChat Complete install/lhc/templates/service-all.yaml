@@ -1,0 +1,90 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-cobrowser
+  namespace: lhc
+spec:
+  selector:
+    app: {{ .Release.Name }}-cobrowser
+  ports:
+  - port: {{ .Values.svcport_cobrowser }}
+    targetPort: {{ .Values.tgport_cobrowser }}
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name:  {{ .Release.Name }}-db
+  namespace: lhc
+spec:
+  selector:
+    app: {{ .Release.Name }}-db
+  type: ClusterIP
+  ports:
+  - name: mysql-port
+    port:  {{ .Values.svcport_db }}
+    targetPort: {{ .Values.tgport_db }}
+    #nodePort: 30306
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-app
+  namespace: lhc
+spec:
+  selector:
+    app: {{ .Release.Name }}-app
+  ports:
+  - port: {{ .Values.svcport_lhc_app }}
+    targetPort: {{ .Values.tgport_lhc_app }}
+    nodePort: 31080
+  type: NodePort
+--- 
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-nodejshelper
+  namespace: lhc
+spec:
+  selector:
+    app: {{ .Release.Name }}-nodejshelper
+  ports:
+  - port: {{ .Values.svcport_nodejshp }}
+    targetPort: {{ .Values.tgport_nodejshp }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-php-resque
+  namespace: lhc
+spec:
+  selector:
+    app: {{ .Release.Name }}-php-resque
+  ports:
+  - port: {{ .Values.svcport_phpresque }}
+    targetPort: {{ .Values.tgport_phpresque }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-php
+  namespace: lhc
+spec:
+  selector:
+    app: {{ .Release.Name }}-php
+  ports:
+  - port: {{ .Values.svcport_php }}
+    targetPort: {{ .Values.tgport_php }}
+    #nodePort: 31081
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-redis
+  namespace: lhc
+spec:
+  selector:
+    app: {{ .Release.Name }}-redis
+  ports:
+  - port: {{ .Values.svcport_redis }}
+    targetPort: {{ .Values.tgport_redis }}
