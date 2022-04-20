@@ -1,5 +1,0 @@
-svcport: 80
-tgport: 80
-pvcname1: lhc-volume
-pvcname2: nginx-config
-pvccode: code-volume
