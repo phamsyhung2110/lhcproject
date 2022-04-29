@@ -1,0 +1,5 @@
+config:
+  proxy_set_header_njs1: a
+  proxy_set_header_njs2: b
+  proxy_set_header_njs3: c
+  proxy_set_header_njs4: d

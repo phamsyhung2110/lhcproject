@@ -1,0 +1,8 @@
+Bước 1: Viết file docker compose.
+	Mỗi thư mục volume muốn mount phải khai báo thành 1 volume riêng
+	Khi tạo thư mục exports trên NFS server cần chmod 777 và gõ lệnh exportfs -a 
+	Trong file /etc/exports cần khai báo tất cả thư mục share
+Bước 2: Chạy stack từ file compose
+-Khi matomo hiện lên có thể gặp 1 số lỗi như time out hoặc www-data user,
+không nên thay đổi owner của thư mục share mount với matomo.
+-Reload lại atarang để tránh lỗi 504 gateway

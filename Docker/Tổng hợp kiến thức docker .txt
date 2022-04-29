@@ -1,0 +1,30 @@
+***Terraform:***
+mỗi region có tên image khác nhau
+cần thêm security group
+muốn connect được với aws phải sửa file credential
+	để sửa được file này cần cài aws cli và gõ lệnh aws configure
+	file này nằm trong C:\User\phamsyhung\.aws\credential
+
+***Docker***
+
+Volume: -Dùng cú pháp(window)
+	volumes:
+      		- type: bind
+        	source: C:\dockerdata  
+        	target: /root
+	+Đây là cách mount trực tiếp thư mục trên máy thật vào thư mục target trên container
+ 	+Chỉ thị volume ở trên nằm trong mục cấu hình container
+-Lệnh docker run -v sẽ là mount vào volume đã tạo,volume này được quản lý bởi docker và
+lưu trữ trong 1 thư mục đặc biệt trên máy thật(window)
+-Dữ liệu sẽ được ghi đè từ thư mục thật vào thư mục trong container trong quá trình chạy
+-Docker compose dùng chỉ thị links để liên kết các container
+Network:
+	-Tạo network trong docker compose với 1 subnet theo ý muốn:
+		networks:
+  			my-bridge-network:
+    			driver: bridge
+   			ipam:
+      			config:
+        			- subnet: 172.18.0.0/24
+		+Chỉ thị networks trên nằm ở global tức là ngang hàng với chỉ thị service.
+-Khi chạy docker compose cần cd tới thư mục chứa file compose(yaml)

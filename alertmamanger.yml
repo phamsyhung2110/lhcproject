@@ -1,0 +1,55 @@
+alertmanager:  
+  enabled: true
+  apiVersion: v2
+  serviceAccount:
+    create: true
+    name: ""
+    annotations: {}
+  podDisruptionBudget:
+    enabled: false
+    minAvailable: 1
+    maxUnavailable: ""
+  secret:
+    annotations: {}
+  service:
+    annotations: {}
+    labels: {}
+    clusterIP: ""
+  port: 9093
+    ## To be used with a proxy extraContainer port
+    ##
+  targetPort: 9093
+  ## Port to expose on each node
+  ## Only used if service.type is 'NodePort'
+  ##
+  nodePort: 30903
+  ## List of IP addresses at which the Prometheus server service is available
+  ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
+  ##
+
+  ## Additional ports to open for Alertmanager service
+  additionalPorts: []
+
+  externalIPs: []
+  loadBalancerIP: ""
+  loadBalancerSourceRanges: []
+  externalTrafficPolicy: Cluster
+  externalTrafficPolicy: Cluster
+  config: 
+    global:
+      resolve_timeout: 1m
+    route:
+      #group_by: [Alertname]
+      # Send all notifications to me.
+      receiver: email-notification
+
+    receivers:
+    - name: email-me
+      email_configs:
+      - to: phamsyhung2110@gmail.com
+        from: phamsyhung2110@gmail.com
+        smarthost: smtp.gmail.com:587
+        auth_username: phamsyhung2110@gmail.com
+        auth_identity: phamsyhung2110@gmail.com
+        auth_password: Hungba.8810
+        send_resolved: true

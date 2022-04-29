@@ -1,0 +1,10 @@
+Các bước tạo SSL  với Openssl:
+Bước 1: Tạo key
+	openssl genrsa -out server.key 1024
+Bước 2: Sử dụng key vừa tạo để tạo Certificate Signing Request(CSR) và bỏ trống pass phrase
+	openssl req -new -key server.key -out server.csr
+Bước 3: Tạo SSL certificates:
+	openssl x509 -req -days 366 -in server.csr -signkey server.key -out server.crt
+Bước 4: Ghi các file vừa tạo vào 1 file .pem duy nhất
+	echo file.csr file.crt file.key >> file.pem
+Bước 5: Sử dụng file .pem add vào web server 

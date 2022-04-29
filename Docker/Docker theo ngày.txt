@@ -1,0 +1,80 @@
+Ngày 1: Docker cơ bản
+	-Network 
+	-Compose
+	-Làm lab mysql và phpmyadmin viết trên docker-compose
+Ngày 2: Docker cơ bản:
+	-Volume: mount thư mục trên máy thật vào container và dùng cho cả 2 container
+	-Viết bằng docker-compose
+	-Sử dụng terraform để tạo EC2
+	-Docker swarm: Khởi tajop 1 node làm manager 
+		+Có chứa token để join cho các node worker
+		+Gặp lỗi timeout
+		+Cần mở các port cần thiết
+Ngày 3:Docker Swarm
+	-Tạo docker swarm bằng 3 instance trên aws
+	-Các docker swarm node kết nối bằng overlay network
+	-Tạo 1 service trên manager node,node manager cũng mặc định là 1 worker node
+	-1 service trong swarm là 1 container được chạy
+	-Lệnh: docker service create --replicas 1 --name helloworld alpine ping docker.com
+		Trong đó replicas là số bản replicate của service được phân phối ra,nếu giá trị là 3
+		thì sẽ phân phối ra 3 node trong swarm,tính cả node manager.
+	-Lệnh cơ bản: docker service create
+			docker service ls
+			docker  service inspect <servcice id hoac name>
+	-Scale service: docker service scale <service name>=<number of scale>
+	-Khi 1 service bị shutdown trên 1 node worker,nó sẽ tự được restart
+	-Drain 1 node l là ngăn 1 node nhận task từ mangager
+		docker node update --availability drain <node>
+	-Routing mesh là publish 1 port map tới port của container,tất cả các node đều có thể truy cập 
+	từ bên ngoài vào port đó kể cả service được map port ko chạy trên node đó.
+		ví dụ: docker service create --name web-server --replicas 2 --publish published=8080,target=80 nginx
+			Tạo service nginx trên node 1 và 2 map port 8080 tới port 80,khi vào web trên
+			webbrowser có thể vào bằng ip của node 3 mặc dù service nginx ko chạy trên node 3
+	***Deploy stack:
+	Docker stack được triển khai từ docker compose file
+	-Tạo các image cần thiết từ dockerfile và push lên repo để các node khác pull image này về
+	-Viết file docker-compose sử dụng tên image trên repo, ví dụ: image: phamsyhung1110/testdocker:python
+	-Dùng lệnh: docker stack deploy -c <tên compose file> <tên stack>
+	-Các task sẽ được phân phối ngẫu nhiên cho các node trong swarm
+	***Chỉ định node cụ thể cho service:
+	-Để chỉ định node cụ thể cho 1 service,thêm placement trong chỉ thị deploy ở docker-compose file
+	-Dùng lệnh docker node update để gán nhãn cho node và thêm nhãn vào placement trong compose file
+	***
+
+	
+Ngày 4: Docker swarm
+	-Docker swarm manager join thêm 1 manager,khi join manager này ở trạng thái Reachable
+	-Mỗi Cluster chỉ nên có 3-7 manager
+	-Trong swarm khi chỉ có 2 node làm manager,nếu node Leader fail sẽ chết cả swarm
+	-Mỗi n node manager sẽ chịu được (n-1)/2 node manager lỗi.
+	Ví dụ có 3 node manager sẽ chịu được 1 node manager lỗi,nếu node bị lỗi là leader thì 
+	1 node khác sẽ lên thay thế làm leader,khi node lỗi khôi phục nó sẽ ở trạng thái Reachable.
+	-Bản replicas
+	*** Dùng Docker để build Matomo,1 app để phân tích trang web.
+		yêu cầu deploy matomo:
+		1 - chạy docker swarm
+		2 - mount data matomo và mariadb ra 1 nfs server
+		3 - cài thêm plugin heatmap của matomo
+		4 - chạy ssl port 443
+
+	-Cách cài cơ bản: https://danielwachtel.com/devops/dockerizing-a-matomo-web-analytics-app
+	-Lệnh: sed -i '<số dòng mà sẽ add text dưới dòng đó>a <text cần add>' <tên file> : add text vào 1 dòng dưới dòng được chỉ định
+		VD:sed -i '13a enable_trusted_host_check=0' config.ini.php : add enable_trusted ... vào dòng 14 trong file config.ini.php
+
+	***Docker Volume với NFS:
+		-Cấu hình NFS server trên máy share và NFS client trên máy chạy docker cần lấy volume: https://vitux.com/install-nfs-server-and-client-on-ubuntu/
+		-Viết docker compose: https://phoenixnap.com/kb/nfs-docker-volumes
+		-Nếu gặp lỗi failed to copy file info...operation not permitted thì lên NFS server sửa file exports thêm mục no_root_squash
+Ngày 5: Docker với SSL
+	-Khi dùng volume nếu thư mục trên máy chưa có dữ liệu,nó sẽ được ghi đè bở tệp mapped trong container ra tệp trên máy.
+	
+	-Create local ssl: https://serverfault.com/questions/578648/properly-setting-up-a-default-nginx-server-for-https
+	-Cài đặt ssl defaul tạo bằng open ssl trên máy ,dùng nginx làm proxy đẩy request tới container matomo,ở file /sites-enabled/default.conf
+	-Thay thế nginx proxy bằng HAproxy
+	-Có các kiểu proxy khác nhau như pass-through...
+
+	*** SSL với container:
+		Khi kháo báo backend trong file haproxy chạy trên container,phải khi báo tên service trong compose:port
+	    	Các container độc lập nên nếu khai báo trong file backend là localhost:80 nó sẽ hiểu là redirect về chính con haproxy đó chứ ko phải
+		về localhost:80 trên máy thật.
+		-Muốn ko cần ghi port khi vào localhost thì chỉ cần map port 80:80 trong docker-compose cho service haproxy

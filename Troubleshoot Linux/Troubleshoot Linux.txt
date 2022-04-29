@@ -1,0 +1,35 @@
+Lệnh Linux	Mô tả
+top	Lệnh top khá giống như Task Manager trong Windows. Nó đưa ra thông tin về tất cả tài nguyên hệ thống, các process đang chạy, tốc độ load trung bình… Lệnh top -d thiết lập khoảng thời gian làm mới lại hệ thống
+ps –u username	Kiểm tra những process được thực hiện bởi một user nhất định
+ps –U root	Kiểm tra mọi process ngoại trừ những process hệ thống
+ps –A	Kiểm tra mọi process trong hệ thống
+Ss	Kiểm tra socket đang kết nối
+ss –l	Hiển thị các cổng đang mở
+w username	Kiểm tra user đăng nhập, lịch sử đăng nhập, các process user đó đang chạy
+vmstat3	Kiểm soát hành vi hệ thống, phần cứng và thông tin hệ thống trong Linux
+ps	Hiển thị các chương trình hiện đang chạy
+uptime	Hiển thị thời gian đã vận hành của hệ thống trong bao lâu
+rpm	Kiểm tra, gỡ bỏ hoặc cài đặt 1 gói .rpm
+yum	Cài đặt các ứng dụng đóng gói (giống rpm)
+wget	Tải các ứng dụng từ một website về
+sh	Chạy một ứng dụng có đuôi .sh
+Startx	Khởi động chế độ xwindows từ cửa sổ terminal
+yum update -y	Update Linux (CentOS)
+stop/start/restart	Dừng/ khởi động/khởi động lại một service hoặc ứng dụng, ví dụ: service mysql stop hoặc /etc/init.d/mysqld start
+kill	Dừng proccess (thường dùng khi process bị treo). Chỉ có super-user mới có thể dừng tất cả các process còn user khác chỉ có thể dừng proccess mà user đó tạo ra
+kill PID hoặc %job	Ngừng một process bằng số PID (Process Identification Number) hoặc số công việc
+pstree	Hiển thị tất cả các process dưới dạng cây
+service –status-all	Kiểm tra tất cả các service và tình trạng của nó
+whereis mysql	Hiển thị nơi các file dịch vụ được cài đặt
+service –status-all | grep abc	Xem tình trạng của process abc
+kill -9 PID	Bắt buộc đóng một process ID
+kill -1 PID	Bắt buộc đóng một process ID và load lại cấu hình mặc định của process đó
+III. Một số lệnh hữu ích khác trong Linux
+Lệnh Linux	Mô tả
+clear	Xoá trắng cửa sổ dòng lệnh
+hwclock	Fix lịch của BIOS
+cal	Xem lịch hệ thống
+date	Xem lịch ngày, giờ hệ thống
+date –s “1 JAN 2018 15:29:00”	Đặt ngày giờ hệ thống theo string
+date +%Y%m%d -s “20180101″	Đặt ngày hệ thống (không thay đổi giờ)
+date +%T -s “00:29:00″	Đặt giờ hệ thống, không thay đổi ngày

@@ -1,0 +1,6 @@
+helm install -n prometheus grafana --set=adminUser=admin,adminPassword=admin,service.type=NodePort bitnami/grafana
+echo "Password: $(kubectl get secret grafana-admin --namespace prometheus -o jsonpath="{.data.GF_SECURITY_ADMIN_PASSWORD}" | base64 --decode)"
+
+helm install prometheus prometheus-community/prometheus --set=adminUser=admin,adminPassword=admin,service.type=NodePort,server.persistentVolume.enabled=false,alertmanager.persistentVolume.enabled=false
+
+https://stackoverflow.com/questions/55497355/can-not-get-prometheus-data-in-grafana-dashboard-in-kubernetes

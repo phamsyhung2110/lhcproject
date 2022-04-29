@@ -1,0 +1,21 @@
+{
+    "port": 80,
+    "upstreams": [
+      {
+        "name": "pool1",
+        "location": "/path1",
+        "servers": [
+          { "host": "server1.rudder.local", "weight": 3 },
+          { "host": "server2.rudder.local", "weight": 2 }
+        ]
+      },
+      {
+        "name": "pool2",
+        "location": "/path2",
+        "servers": [
+          { "host": "server4.rudder.local", "weight": 1 },
+          { "host": "server5.rudder.local", "weight": 1 }
+        ]
+      }
+    ]
+  }

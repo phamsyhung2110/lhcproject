@@ -1,0 +1,29 @@
+Trong phần target của prometheus,nếu các service này bị down thì fix như sau
+Trên node manager: cd /etc/kubernetes/manifests/ 
+Sửa file kube-sceduler và kube-controller-manager  và thêm --bind-address=0.0.0.0 vào phần spec.containers.command
+Riêng file etcd.yaml, sửa phần liten-metrics-urls=https://0.0.0.0:2381
+Với kube-proxy: 
+	 kubectl edit cm/kube-proxy -n kube-system
+
+...
+kind: KubeProxyConfiguration
+metricsBindAddress: 0.0.0.0:10249
+...
+
+ kubectl delete pod -l k8s-app=kube-proxy -n kube-system
+
+
+https://stackoverflow.com/questions/60734799/all-kubernetes-proxy-targets-down-prometheus-operator
+https://github.com/prometheus-operator/prometheus-operator/issues/2207
+https://github.com/prometheus-community/helm-charts/issues/204
+
+***Với Etcd***
+https://github.com/prometheus-operator/prometheus-operator/issues/2207
+
+tạo secret chứa các file ssl cert cho etcd
+Edit helm value: helm show values [chart] >> prometheus.yaml
+nvim prometheus.yaml.
+Sửa như trong link hướng dẫn
+Sau đó 
+	helm upgrade prometheus-grafana prometheus-community/kube-prometheus-stack -f .\prometheus.yaml -n prometheus
+Sau khi upgrade xong xem lại các service và chỉnh sửa lại thành nodeport(grafana)

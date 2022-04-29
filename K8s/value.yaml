@@ -1,0 +1,38 @@
+config:
+  listen_port: 150
+  php_upstream:  localhost:9000
+  nodejs_upstream:  http://lhc-nodejshelper:8000/socketcluster/
+
+
+  proxy_set_header_njs1: X-Real-IP $remote_addr
+  proxy_set_header_njs2: X-Forwarded-For $proxy_add_x_forwarded_for
+  proxy_set_header_njs3: Host $http_host
+  proxy_set_header_njs4: X-NginX-Proxy true
+
+  proxy_pass_njs: http://lhc-nodejshelper:8000/socketcluster/
+  proxy_redirect_njs: off
+  proxy_http_version_njs: 1.1
+  proxy_set_header_njs5: Upgrade $http_upgrade
+  proxy_set_header_njs6: Connection "upgrade"
+
+
+  location_cobr: /wsnodejs/ {
+  proxy_set_header_cobr1: X-Real-IP $remote_addr
+  proxy_set_header_cobr2: X-Forwarded-For $proxy_add_x_forwarded_for
+  proxy_set_header_cobr3: Host $http_host
+  proxy_set_header_cobr4: X-NginX-Proxy true
+
+  proxy_pass: http://lhc-cobrowser:31130/
+  proxy_redirect: off
+  proxy_http_version: 1.1
+  proxy_set_header_cobr5: Upgrade $http_upgrade
+  proxy_set_header_cpbr6: Cnection "upgrade"
+
+  location_php: location ~* (^(?!(?:(?!(php)).)*/(albums|bin|var|lib|cache|doc|settings|pos|modules)/).*?(index\.php|upgrade\.php)$) {
+  fastcgi_split_path_info: ^(.+\.php)(/.+)$
+  fastcgi_pass: php_upstream
+  fastcgi_index: index.php
+  try_files:       $uri $uri/ =404
+  includeL:         fastcgi_params
+  fastcgi_param: SCRIPT_FILENAME $document_root$fastcgi_script_name
+  fastcgi_param PATH_INFO: $fastcgi_path_info

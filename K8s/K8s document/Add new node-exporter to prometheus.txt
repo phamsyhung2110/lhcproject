@@ -1,0 +1,15 @@
+Install node-exporter ubuntu:
+
+https://nsrc.org/workshops/2021/sanog37/nmm/netmgmt/en/prometheus/ex-node-exporter.htm
+
+Add node-exporter to prometheus:
+
+Trong file values của helm chart, tìm mục additionalScrapeConfigs sau đó thêm như sau:
+
+	additionalScrapeConfigs: |
+      - job_name: "haproxy-node-exporter"
+        scrape_interval: 5s
+        static_configs:
+        - targets: ["172.31.17.75:9100"]
+
+targets là IP và port 9100 của node-exporter 
